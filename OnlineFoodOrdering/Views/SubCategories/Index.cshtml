@@ -1,0 +1,61 @@
+﻿@model IEnumerable<OnlineFoodOrdering.Models.Entity.SubCategories>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1>SubCategories</h1>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <!-- Admin view with table -->
+        <p>
+            <a asp-action="Create" class="btn btn-primary">Create New</a>
+        </p>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.SubCategoryName)</th>
+                    <th>@Html.DisplayNameFor(model => model.SubCategoryDesc)</th>
+                    <th>@Html.DisplayNameFor(model => model.Category.CategoryName)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.SubCategoryName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.SubCategoryDesc)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Category.CategoryName)</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.SubCategoryId" class="btn btn-primary btn-sm">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.SubCategoryId" class="btn btn-info btn-sm">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.SubCategoryId" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="row gy-3" style="gap: 20px !important;">
+            @foreach (var subCategory in Model)
+            {
+                <div class="card" style="width: 18rem;">
+                    <img src="@Html.DisplayFor(modelItem => subCategory.ImageFile)" class="card-img-top img-fluid mt-2" alt="Category Image" style="height: 200px; object-fit: cover;" />
+                    <div class="card-body d-flex flex-column align-items-center">
+                        <h5 class="card-title">@Html.DisplayFor(modelItem => subCategory.SubCategoryName)</h5>
+                        <p class="card-text">@Html.DisplayFor(modelItem => subCategory.SubCategoryDesc)</p>
+                        <p class="card-text">@Html.DisplayFor(modelItem => subCategory.Category.CategoryName)</p>
+                        <a href="@Url.Action("Details", new { id = subCategory.SubCategoryId })" class="btn mt-auto" style="background-color: #ff692a; font-weight:900; color: white;" data-mdb-ripple-init>Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

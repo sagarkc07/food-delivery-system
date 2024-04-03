@@ -1,0 +1,133 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using OnlineFoodOrdering.Models.Entity
+@model IEnumerable<OnlineFoodOrdering.Models.Entity.Food>
+
+@inject SignInManager<ApplicationUsers> SignInManager
+@inject UserManager<ApplicationUsers> UserManager
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .food-card {
+        width: 18rem;
+        margin-bottom: 20px;
+    }
+
+        .food-card img {
+            max-height: 250px;
+            object-fit: cover;
+        }
+
+        .food-card .card-body {
+            text-align: center;
+        }
+
+            .food-card .card-body h5 {
+                margin-bottom: 10px;
+            }
+
+            .food-card .card-body p {
+                margin-bottom: 15px;
+            }
+
+        .food-card form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .food-card .form-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+            .food-card .form-group label {
+                flex: 1;
+                margin-right: 10px;
+            }
+
+            .food-card .form-group input[type="number"] {
+                flex: 2;
+                padding: 5px;
+                text-align: center;
+            }
+
+        .food-card .btn-add-to-cart {
+            width: 100%;
+        }
+</style>
+
+<div class="container mt-2">
+    <h1 style="color :#ff692a;">Food Items</h1>
+    @if (User.IsInRole("Admin"))
+    {
+        <p>
+            <a asp-action="Create" class="btn btn-primary">Create New</a>
+        </p>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <!-- Table Header -->
+                <thead>
+                    <tr>
+                        <th>Food Name</th>
+                        <th>Food Description</th>
+                        <th>Sub Category</th>
+                        <th>Price</th>
+                        @* <th>Availability</th> *@
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <!-- Table Body -->
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.FoodName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FoodDescription)</td>
+                            <td>@Html.DisplayFor(modelItem => item.SubCategory.SubCategoryName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Price)</td>
+                            @* <td>@Html.DisplayFor(modelItem => item.Availability)</td> *@
+                            <td>
+                                <div class="btn-group" style="gap : 10px;" role="group">
+                                    <a asp-action="Edit" asp-route-id="@item.FoodId" class="btn btn-warning btn-sm">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.FoodId" class="btn btn-info btn-sm">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.FoodId" class="btn btn-danger btn-sm">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            @foreach (var foods in Model)
+            {
+                <div class="col">
+                    <div class="card food-card mx-auto">
+                        <!-- Add mx-auto for horizontal centering -->
+                        <img src="@Url.Content(foods.Photo)" class="card-img-top img-fluid" alt="Food Image" />
+                        <div class="card-body">
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => foods.FoodName)</h5>
+                            <p class="card-text">@Html.DisplayFor(modelItem => foods.FoodDescription)</p>
+                            <p class="card-text">@Html.DisplayFor(modelItem => foods.SubCategory.SubCategoryName) Price : @Html.DisplayFor(modelItem => foods.Price)</p>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                <a asp-action="Details" asp-route-id="@foods.FoodId" class="btn mt-auto btn-add-to-cart" style="background-color: #ff692a; font-weight:600; color: white;">Add to Cart</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+            }
+        </div>
+</div>

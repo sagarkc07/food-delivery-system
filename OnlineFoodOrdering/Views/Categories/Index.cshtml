@@ -1,0 +1,64 @@
+﻿@model IEnumerable<OnlineFoodOrdering.Models.Entity.Categories>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4" style="color: #ff692a;">Categories</h1>
+    @if (User.IsInRole("Admin"))
+    {
+        <p>
+            <a asp-action="Create" class="btn btn-primary">Create New</a>
+        </p>
+
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.CategoryName)</th>
+                        <th>@Html.DisplayNameFor(model => model.Description)</th>
+                        <th>@Html.DisplayNameFor(model => model.ModifiedDate)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.CategoryName)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                            <td>@Html.DisplayFor(modelItem => item.ModifiedDate)</td>
+                            <td>
+                                <div class="btn-group" role="group" style="gap : 10px">
+                                    <a asp-action="Edit" asp-route-id="@item.CategoryId" class="btn btn-warning btn-sm">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.CategoryId" class="btn btn-info btn-sm">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.CategoryId" class="btn btn-danger btn-sm">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var category in Model)
+            {
+                <div class="col">
+                    <div class="card">
+                        <img src="@Html.DisplayFor(modelItem => category.CategoryImage)" class="card-img-top img-fluid" alt="Category Image" style="height: 200px; object-fit: cover; border-bottom: 2px solid #ff692a;" />
+                        <div class="card-body text-center">
+                            <h5 class="card-title" style="color: #ff692a;">@Html.DisplayFor(modelItem => category.CategoryName)</h5>
+                            <p class="card-text">@Html.DisplayFor(modelItem => category.Description)</p>
+                            <a href="@Url.Action("Details", new { id = category.CategoryId })" class="btn" style="background-color: #ff692a; font-weight : 600; color: white">Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

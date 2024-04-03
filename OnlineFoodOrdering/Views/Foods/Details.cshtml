@@ -1,0 +1,159 @@
+﻿@model OnlineFoodOrdering.Models.Entity.Food
+@using Microsoft.AspNetCore.Identity
+@using OnlineFoodOrdering.Models.Entity
+
+@inject SignInManager<ApplicationUsers> SignInManager
+@inject UserManager<ApplicationUsers> UserManager
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    h1, h4, h5 {
+        color: #ff692a;
+    }
+
+    hr {
+        border-top: 2px solid #ff692a;
+        margin-top: 5px;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        max-height: 300px;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+
+        .card img {
+            object-fit: cover;
+            max-width: 100%;
+            max-height: 100%;
+            border-bottom: 1px solid #ddd;
+        }
+
+    .lead {
+        font-size: 1.25rem;
+        margin-bottom: 20px;
+    }
+
+    .dl-horizontal dt {
+        white-space: nowrap;
+    }
+
+    .dl-horizontal dd {
+        margin-left: 0;
+    }
+
+    .btn-primary,
+    .btn-add-to-cart {
+        background-color: #ff692a;
+        border: 1px solid #ff692a;
+        font-weight: 600;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: 1px solid #6c757d;
+        color: #ffffff;
+    }
+
+        .btn-primary:hover,
+        .btn-add-to-cart:hover,
+        .btn-secondary:hover {
+            filter: brightness(90%);
+        }
+
+    .quantity-group {
+        display: flex;
+        align-items: center;
+    }
+
+/*     .quantity-label {
+        margin: 10px;
+        mergin-right : 10px;
+    } */
+
+    .quantity-input {
+        width: 150px;
+        /* text-align: center; */
+    }
+</style>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Food Details</h1>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h4>@Html.DisplayFor(model => model.FoodName)</h4>
+            <hr />
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <img src="@Model.Photo" alt="Food Image" class="card-img-top img-fluid" />
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <h5>@Html.DisplayNameFor(model => model.FoodDescription)</h5>
+                    <p class="lead">@Html.DisplayFor(model => model.FoodDescription)</p>
+
+                    <dl class="row dl-horizontal">
+                        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.FoodName)</dt>
+                        <dd class="col-sm-10">@Html.DisplayFor(model => model.FoodName)</dd>
+
+                        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.SubCategory)</dt>
+                        <dd class="col-sm-10">@Html.DisplayFor(model => model.SubCategory.SubCategoryDesc)</dd>
+
+                        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Price)</dt>
+                        <dd class="col-sm-10">@Html.DisplayFor(model => model.Price)</dd>
+
+                        <dt class="col-sm-2">@Html.DisplayNameFor(model => model.Availability)</dt>
+                        <dd class="col-sm-10">@Html.DisplayFor(model => model.Availability)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (SignInManager.IsSignedIn(User))
+{
+    @if (User.IsInRole("Customer"))
+    {
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <form asp-controller="Order" asp-action="AddToCart" method="post" class="quantity-group">
+                        <div class="form-group">
+                            <label for="quantity" class="quantity-label">Quantity:</label>
+                            <input type="number" name="quantity" value="1" min="1" class="form-control quantity-input" />
+                        </div>
+                        <input type="hidden" name="foodId" value="@Html.DisplayFor(model => model.FoodId)" />
+                        <button style="margin-left : 10px !important;" type="submit" class="btn mt-auto btn-add-to-cart ml-2">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+}
+@if (SignInManager.IsSignedIn(User))
+{
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="container mt-4">
+            <div class="row">
+                <div class="col-md-12">
+                    <a asp-action="Edit" asp-route-id="@Model?.FoodId" class="btn btn-primary">Edit</a>
+                    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    }
+}
+</div>
